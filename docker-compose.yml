@@ -1,0 +1,35 @@
+services:
+    postgres:
+        container_name: springdb
+        image: postgres
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: test_db
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres:/var/lib/postgres/data
+        networks:
+            - spring-network
+        # entrypoint: null
+
+    spring-boot-app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: spring-app-container
+        image: spring-app
+        ports:
+            - "8080:8080"
+        networks:
+            - spring-network
+        depends_on:
+            - postgres
+
+volumes:
+    postgres:
+
+networks:
+    spring-network:
+        driver: bridge
